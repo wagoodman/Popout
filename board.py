@@ -28,6 +28,15 @@ class Queue:
         else:
             raise RunTimeError
 
+    def removeTop(self):
+        if not self.empty():
+            return self.queue.pop(len(self.queue)-1)
+        else:
+            raise RunTimeError
+
+    def enqueueFront(self, disc):
+        self.queue.insert(0,disc)
+
     def contains(self, disc):
         try:
             index = self.queue.index(disc)
@@ -80,6 +89,16 @@ class Board():
             return True
         return False
 
+    #UNDO DROP value into column
+    def undoPush(self, col, value):
+        self.col[col].removeTop()
+
+
+    #UNDO POP value from column
+    def undoPop(self, col, value):
+        self.col[col].enqueueFront(value)
+
+
     #Generates ALL possible moves
     def getMoves(self, value):
         q = Queue(self.width*2)
@@ -129,13 +148,25 @@ class Board():
         
         return True
 
-    #commits move to new board if valid, else returns original board
-    def makeBoard(self, move, value):
-        newBoard = copy.deepcopy(self)
-        if newBoard.doMove(move, value):
-            return newBoard
+    #commits move to self, not on new board!
+    def undoMove(self,move,value):
+        
+        if len(move) < 2:
+            return False
+        
+        if not move[1].isdigit():
+            return False
+
+        col = int(move[1])
+
+        if (move[0].lower() == "p"):
+            return self.undoPop(col, value[0])
+        elif (move[0].lower() == "d"):
+            return self.undoPush(col,value[0])
         else:
-            return self
+            return False
+        
+        return True
         
     #Returns the value of the disc in row,col
     def getValue(self,row,col):

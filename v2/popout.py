@@ -19,7 +19,6 @@ def cleanInput(move):
         if (move[0].lower() == "d" or move[0].lower() == "p"):
             if (move[1].isdigit()):
                 return str(move[0]+str(int(move[1])-1))
-
     return move
 
 def validDim(size):
@@ -49,13 +48,10 @@ while not depth.isdigit() :
 while playerOption.lower() != "h" and playerOption.lower() != "c":
     playerOption = raw_input("Specify who gets the first move [human=h, computer=c]: ")
 
-width = None
-height = None
-while not validDim(width):
-    width = raw_input("Specify Board Width >4: ")
+size = None
 
-while not validDim(height):
-    height = raw_input("Specify Board Height >4: ")
+while not validDim(size):
+    height = raw_input("Specify Board Size >4: ")
 
 
 
@@ -63,28 +59,28 @@ while not validDim(height):
 useAlphaBeta = False
 depth = 5
 playerOption = "h"
-width = 6
-height = 6
+size = 6
+
+board.buildScoreCache(size)
 
 # ======================================================================
 # START GAME
 
 move = ""
-boardInstance = board.Board(math.fabs(int(width)), 
-                            math.fabs(int(height)))
+boardInstance = board.Board(math.fabs(int(size)), ["X", "O"])
 humanTurn = True
 humanTurnMessage = "Enter your move [Operation=d,p][Column=1-"+str(boardInstance.width)+"]: "
 if playerOption.lower() == "c":
     humanTurn = False
 
 print boardInstance
-while move.lower() != "q" and not boardInstance.validEndGame() :
+while move.lower() != "q" and not boardInstance.isEndGame() :
 
     if humanTurn == True:
         humanTurn = False
 
         move = cleanInput(raw_input(humanTurnMessage))
-        while speakHAL( not boardInstance.doMove(move,"X") ) :
+        while speakHAL( not boardInstance.doMove(0, move) ) :
             move = cleanInput(raw_input(humanTurnMessage))
 
         print boardInstance
@@ -95,10 +91,12 @@ while move.lower() != "q" and not boardInstance.validEndGame() :
         print "\nHAL is thinking about his next move... "
         score ,move = search.minimax(boardInstance, int(0), int(depth), int(-1*(sys.maxsize-2)), int((sys.maxsize-2)), useAlphaBeta)
         print "HAL's Move: "+str(move[0])+str(int(move[1])+1)+ "\t With Score: " + str(score)
-        boardInstance.doMove(move,"O")
+        boardInstance.doMove(1, move)
         print "Your turn... puney human.\n"
         print boardInstance
         print time.time() - s, "seconds"
+        print search.count, "Hypothetical Moves"
+        search.count = 0
     
 
 print "Thank you for a very enjoyable game, Dave."

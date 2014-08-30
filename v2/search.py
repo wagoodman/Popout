@@ -1,24 +1,27 @@
 import sys
-
+count = 0
 def minimax(board, curdepth, maxdepth, alpha, beta, useAlphaBeta):
-    
+    global count
+    count += 1
     if (curdepth+1)%2 == 0:
-        myDisc = "X"
+        player = 0
     elif (curdepth+1)%2 != 0:
-        myDisc = "O"
+        player = 1
     
-    if board.validEndGame() or int(curdepth) >= maxdepth:
-        return  board.getBoardScore(myDisc), board.getMoves(myDisc)[0]
+    if board.isEndGame() or int(curdepth) >= maxdepth:
+        return  board.getBoardScore(player), board.getPossibleMoves(player)[0]
 
     bestMove = None
     bestScore = int(-1*(sys.maxsize-2))
 
-    for move in board.getMoves(myDisc):
-        board.doMove(move, myDisc)
+    for move in board.getPossibleMoves(player):
+        board.doMove(player, move)
+
         score, _ = minimax(board, curdepth+1, maxdepth, -beta, max(int(alpha), bestScore), useAlphaBeta)
-        board.undoMove(move, myDisc)
+        board.undoMove(player, move)
 
         score = -score
+        
         
         if score > bestScore:
             bestScore = score
