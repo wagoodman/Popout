@@ -60,7 +60,7 @@ while not validDim(height):
 
 
 """
-useAlphaBeta = False
+useAlphaBeta = True
 depth = 5
 playerOption = "h"
 width = 6
