@@ -61,10 +61,10 @@ while not validDim(height):
 
 """
 useAlphaBeta = True
-depth = 5
+depth = 6
 playerOption = "h"
-width = 6
-height = 6
+width = 7
+height = 7
 
 # ======================================================================
 # START GAME
@@ -96,9 +96,13 @@ while move.lower() != "q" and not boardInstance.validEndGame() :
         score ,move = search.minimax(boardInstance, int(0), int(depth), int(-1*(sys.maxsize-2)), int((sys.maxsize-2)), useAlphaBeta)
         print "HAL's Move: "+str(move[0])+str(int(move[1])+1)+ "\t With Score: " + str(score)
         boardInstance.doMove(move,"O")
-        print "Your turn... puney human.\n"
+        
         print boardInstance
-        print time.time() - s, "seconds"
+        print "%3.3f"%(time.time() - s), "seconds"
+        print search.count, "Hypothetical moves evaluated."
+        search.count = 0
+        print "Your turn... puney human.\n"
+
     
 
 print "Thank you for a very enjoyable game, Dave."

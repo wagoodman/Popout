@@ -1,7 +1,8 @@
 import sys
-
+count = 0
 def minimax(board, curdepth, maxdepth, alpha, beta, useAlphaBeta):
-    
+    global count
+    count += 1
     if (curdepth+1)%2 == 0:
         myDisc = "X"
     elif (curdepth+1)%2 != 0:
